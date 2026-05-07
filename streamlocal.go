@@ -117,13 +117,6 @@ func (h *ForwardedUnixHandler) HandleSSHRequest(ctx Context, srv *Server, req *g
 		}
 
 		addr := reqPayload.SocketPath
-		h.Lock()
-		_, ok := h.forwards[addr]
-		h.Unlock()
-		if ok {
-			// TODO: log failure
-			return false, nil
-		}
 
 		ln, err := srv.ReverseUnixForwardingCallback(ctx, addr)
 		if err != nil {
