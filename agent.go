@@ -69,7 +69,9 @@ func ForwardAgentConnections(l net.Listener, s Session) {
 			wg.Add(2)
 			go func() {
 				io.Copy(conn, channel)
-				conn.(*net.UnixConn).CloseWrite()
+				if unixConn, ok := conn.(*net.UnixConn); ok { // avoid panic in Windows' named pipe
+					unixConn.CloseWrite()
+				}
 				wg.Done()
 			}()
 			go func() {
